@@ -1,0 +1,11 @@
+<binding>
+   <mapping class="org.openmrs.module.dss.xmlBeans.physiciannote.PhysicianNoteConfig" name="physicianNoteConfig">
+       <structure field="headingOrder" usage="optional"/>
+   </mapping>
+   
+   <mapping class="org.openmrs.module.dss.xmlBeans.physiciannote.HeadingOrder" name="headingOrder">
+       <collection field="headings">
+           <value name="heading"/>
+       </collection>
+   </mapping>
+</binding>
