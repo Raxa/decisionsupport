@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE beans PUBLIC "-//SPRING//DTD BEAN//EN" "http://www.springframework.org/dtd/spring-beans.dtd">
+ 
+<!-- Beans to add to the current Application context definition -->
+ 
+<beans>
+        
+        <bean id="dssUrlMapping" class="org.springframework.web.servlet.handler.SimpleUrlHandlerMapping">
+       <property name="mappings">
+           <props>
+                                <prop key="/module/@MODULE_ID@/runRules.form">runRules</prop>
+                                <prop key="/module/@MODULE_ID@/searchRules.form">searchRules</prop>
+                                <prop key="/module/@MODULE_ID@/deleteRules.form">deleteRules</prop>
+                                <prop key="/module/@MODULE_ID@/ruleTester.form">ruleTester</prop>       
+                        </props>
+                </property>
+        </bean>
+ 
+        <bean id="runRules" class="@MODULE_PACKAGE@.web.RunRulesController">
+                <property name="commandName"><value>runRulesObject</value></property>
+                <property name="formView"><value>/module/@MODULE_ID@/runRules</value></property>
+                <property name="successView"><value>runRules.form</value></property>
+        </bean>
+        
+        <bean id="deleteRules" class="@MODULE_PACKAGE@.web.DeleteRulesController">
+                <property name="commandName"><value>deleteRulesObject</value></property>
+                <property name="formView"><value>/module/@MODULE_ID@/deleteRules</value></property>
+                <property name="successView"><value>deleteRules.form</value></property>
+        </bean>
+        
+        <bean id="searchRules" class="@MODULE_PACKAGE@.web.SearchRulesController">
+                <property name="commandName"><value>searchRulesObject</value></property>
+                <property name="formView"><value>/module/@MODULE_ID@/searchRules</value></property>
+                <property name="successView"><value>searchRules.form</value></property>
+        </bean>
+        <bean id="ruleTester" class="org.openmrs.module.dss.web.RuleTesterController">
+                <property name="commandName"><value>ruleTesterObject</value></property>
+                <property name="formView"><value>/module/@MODULE_ID@/ruleTester</value></property>
+                <property name="successView"><value>ruleTester.form</value></property>
+        </bean>
+   <bean parent="serviceContext">
+                <property name="moduleService">
+                        <list>
+                                <value>org.openmrs.module.dss.service.DssService</value> <!-- service interface name -->
+                                <bean class="org.springframework.transaction.interceptor.TransactionProxyFactoryBean">
+                                        <property name="transactionManager"><ref bean="transactionManager"/></property>
+                                        <property name="target">
+                                                <bean class="org.openmrs.module.dss.impl.DssServiceImpl">
+                                                        <property name="dssDAO">
+                                                                <bean class="org.openmrs.module.dss.db.hibernate.HibernateDssDAO">
+                                                                        <property name="sessionFactory"><ref bean="sessionFactory"/></property> 
+                                                                </bean>
+                                                        </property>                             
+                                                </bean>
+                                        </property>
+                                        <property name="preInterceptors">
+                                                <list>
+                                                        <ref bean="authorizationInterceptor"/>
+                                                </list>
+                                        </property>
+                                        <property name="transactionAttributeSource">
+                                                <bean class="org.springframework.transaction.annotation.AnnotationTransactionAttributeSource"/>
+                                        </property>
+                                </bean>
+                        </list>
+                </property>
+        </bean>
+        
+        <bean id="dssRmiService" class="org.openmrs.module.dss.impl.DssRmiServiceImpl">
+   </bean>
+   
+   <bean class="org.springframework.remoting.rmi.RmiServiceExporter">
+       <property name="serviceName" value="DssRmiService"/>
+       <property name="service" ref="dssRmiService"/>
+       <property name="serviceInterface" value="org.openmrs.module.dss.service.DssRmiService"/>
+       <property name="registryPort" value="1199"/>
+   </bean>
+   
+</beans>

@@ -1,0 +1,22 @@
+<log4j:configuration xmlns:log4j="http://jakarta.apache.org/log4j/">
+        <appender name="DSS_FILE" class="org.apache.log4j.DailyRollingFileAppender">
+                <param name="File" value="${catalina.home}/logs/dss.log"/>
+                <param name="Append" value="true"/>
+                <param name="DatePattern" value="'.'yyyy-MM-dd"/>
+                <layout class="org.apache.log4j.PatternLayout">
+                        <param name="ConversionPattern" value="%C{1}.%M|%d{ISO8601}|%m%n"/>
+                </layout>
+        </appender>
+        <logger name="org.openmrs.module.dss.DssManager">
+                <level value="INFO"/>
+                <appender-ref ref="DSS_FILE"/>
+        </logger>
+        <logger name="org.openmrs.module.dss.CompilingClassLoader">
+                <level value="INFO"/>
+                <appender-ref ref="DSS_FILE"/>
+        </logger>
+        <logger name="org.openmrs.module.dss.impl.DssServiceImpl">
+                <level value="INFO"/>
+                <appender-ref ref="DSS_FILE"/>
+        </logger>
+</log4j:configuration>
